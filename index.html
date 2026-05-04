@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BWICS Blotter (Demo)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    input { margin-bottom: 10px; padding: 6px; width: 300px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { cursor: pointer; background: #f4f4f4; }
+    tr:hover { background-color: #fafafa; }
+    .mono { font-family: monospace; }
+  </style>
+</head>
+<body>
+
+<h2>BWICS Blotter (Demo)</h2>
+<input type="text" id="search" placeholder="Search..." />
+
+<table id="bwicsTable">
+  <thead>
+    <tr>
+      <th onclick="sortTable(0)">CUSIP</th>
+      <th onclick="sortTable(1)">Issuer</th>
+      <th onclick="sortTable(2)">Coupon</th>
+      <th onclick="sortTable(3)">Maturity</th>
+      <th onclick="sortTable(4)">Sector</th>
+      <th onclick="sortTable(5)">Rating</th>
+      <th onclick="sortTable(6)">Size</th>
+      <th onclick="sortTable(7)">Dealer</th>
+      <th onclick="sortTable(8)">Price</th>
+      <th>Comment</th>
+    </tr>
+  </thead>
+  <tbody id="tableBody"></tbody>
+</table>
+
+<script>
+const data = [
+  ["459200KF5","IBM","4.00%","06/15/2028","Technology","A",10,"JPM",99.25,"Firm"],
+  ["594918BM3","Microsoft","3.30%","02/06/2027","Technology","AAA",5,"GS",99.80,"Subject"],
+  ["6174468D5","Morgan Stanley","5.10%","01/23/2030","Financials","BBB+",15,"BAML",98.90,"Balance-sheet limited"]
+];
+
+const tableBody = document.getElementById("tableBody");
+const searchInput = document.getElementById("search");
+
+function render(rows) {
+  tableBody.innerHTML = "";
+  rows.forEach(r => {
+    const tr = document.createElement("tr");
+    r.forEach((c,i) => {
+      const td = document.createElement("td");
+      td.textContent = c;
+      if (i === 0) td.className = "mono";
+      tr.appendChild(td);
+    });
+    tableBody.appendChild(tr);
+  });
+}
+
+searchInput.addEventListener("input", () => {
+  const q = searchInput.value.toLowerCase();
+  render(data.filter(r => r.join(" ").toLowerCase().includes(q)));
+});
+
+let asc = true;
+function sortTable(col) {
+  data.sort((a,b) => asc ? (a[col] > b[col] ? 1 : -1) : (a[col] < b[col] ? 1 : -1));
+  asc = !asc;
+  render(data);
+}
+
+render(data);
+</script>
+</body>
+</html>
